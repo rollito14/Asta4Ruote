@@ -1,10 +1,13 @@
-﻿using AuctionService.Data;
+﻿using System.Diagnostics;
+using AuctionService.Data;
 using AuctionService.DTOs;
 using AuctionService.Entities;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using Contracts;
 using MassTransit;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -34,11 +37,12 @@ public class AuctionController(AuctionDbContext context, IMapper mapper, IPublis
   return mapper.Map<AuctionDto>(auction);
  }
 
+ [Authorize]
  [HttpPost]
  public async Task<ActionResult<AuctionDto>> CreateAuction(CreateAuctionDto auctionDto)
  {
   var auction = mapper.Map<Auction>(auctionDto);
-  auction.Seller = "test";
+  auction.Seller = User.Identity.Name;
   context.Auctions.Add(auction);
   var newAuction = mapper.Map<AuctionDto>(auction);
   await publishEndpoint.Publish(mapper.Map<AuctionCreated>(newAuction));
@@ -46,13 +50,14 @@ public class AuctionController(AuctionDbContext context, IMapper mapper, IPublis
   if (!result) return BadRequest("could not save changes to the db");
   return CreatedAtAction(nameof(GetAuctionById), new { auction.Id }, newAuction);
  }
-
+[Authorize]
  [HttpPut("{id:Guid}")]
  public async Task<ActionResult> UpdateAuction(Guid id, UpdateAuctionDto updateAuctionDto)
  {
   var auction = await context.Auctions.Include(x => x.Item)
    .FirstOrDefaultAsync(x => x.Id == id);
   if (auction == null) return NotFound();
+  if (auction.Seller != User.Identity.Name) return Forbid();
   auction.Item.Make = updateAuctionDto.Make ?? auction.Item.Make;
   auction.Item.Model = updateAuctionDto.Model ?? auction.Item.Model;
   auction.Item.Year = updateAuctionDto.Year ?? auction.Item.Year;
@@ -63,12 +68,13 @@ public class AuctionController(AuctionDbContext context, IMapper mapper, IPublis
   if (result) return Ok();
   return BadRequest("could not update car details");
  }
-
+[Authorize]
  [HttpDelete("{id:Guid}")]
  public async Task<ActionResult> DeleteAuction(Guid id)
  {
   var auction = await context.Auctions.FindAsync(id);
   if (auction == null) return NotFound();
+  if (auction.Seller != User.Identity.Name) return Forbid();
   context.Auctions.Remove(auction);
   await publishEndpoint.Publish (new AuctionDeleted { Id = auction.Id.ToString() });
   var result = await context.SaveChangesAsync() > 0;

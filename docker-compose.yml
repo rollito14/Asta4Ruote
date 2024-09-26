@@ -13,11 +13,11 @@
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=mongopw
     ports: 
-    - 27018:27017
+    - 27017:27017
     volumes:
     - /data/db
   rabbitmq:
     image: rabbitmq:3-management-alpine
     ports:
       - 5673:5672
-      - 15673:15672
+      - 15673:15673
