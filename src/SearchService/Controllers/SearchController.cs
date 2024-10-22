@@ -49,7 +49,7 @@ public class SearchController : ControllerBase
         {
             results = result.Results,
             pageCount = result.PageCount,
-            totalCounts = result.TotalCount
+            totalCount = result.TotalCount
         });
     }
 }
