@@ -2,7 +2,7 @@
 
 interface Props {
   title: string;
-  subtitle: string;
+  subtitle?: string;
   center?: boolean;
 }
 const Heading = ({ title, subtitle, center }: Props) => {

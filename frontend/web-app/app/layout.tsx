@@ -1,6 +1,7 @@
 import "./globals.css";
 import Navbar from "@/app/nav/Navbar";
 import React from "react";
+import ToasterProvider from "@/app/providers/ToasterProvider";
 
 export const metadata = {
   title: "Asta4Route",
@@ -15,6 +16,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
+        <ToasterProvider />
         <Navbar />
         <main className={"container mx-auto px-5 pt-10"}>{children}</main>
       </body>
