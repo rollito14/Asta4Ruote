@@ -4,7 +4,7 @@
     environment:
       - POSTGRES_PASSWORD=postgrespw
     ports:
-      - 5432:5432
+      - "5432:5432"
     volumes:
       - /var/lib/postgresql/data
   mongodb:
@@ -13,20 +13,19 @@
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=mongopw
     ports: 
-    - 27017:27017
+    - "27017:27017"
     volumes:
     - /data/db
   rabbitmq:
     image: rabbitmq:3-management-alpine
     ports:
-      - 5672:5672
-      - 15672:15672
+      - "5672:5672"
+      - "15672:15672"
   auction-svc:
    image: cyberniko14/auction-svc:latest
    build:
     context: .
     dockerfile: src/AuctionService/Dockerfile
-   platform: linux/amd64
    environment:
     - ASPNETCORE_ENVIRONMENT=Development
     - ASPNETCORE_URLS=http://+:80
@@ -39,8 +38,8 @@
     - Kestrel__Endpoints__Grpc__WebApi__Protocols=Http1
     - Kestrel__Endpoints__Grpc__WebApi__Url=http://+:80
    ports:
-     - 7001:80
-     - 7777:7777
+     - "7001:80"
+     - "7777:7777"
    depends_on:
      - postgres
      - rabbitmq
@@ -56,7 +55,7 @@
       - ConnectionStrings__MongoDbConnection=mongodb://root:mongopw@mongodb
       - AuctionServiceUrl=http://auction-svc
     ports:
-      - 7002:80
+      - "7002:80"
     depends_on:
       - mongodb
       - rabbitmq
@@ -82,9 +81,9 @@
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
     ports:
-      - 6001:80
+      - "6001:80"
   bid-svc:
-    image: trycatchlearn/bid-svc:latest
+    image: cyberniko14/bid-svc:latest
     build:
       context: .
       dockerfile: src/BiddingService/Dockerfile
@@ -96,7 +95,7 @@
       - IdentityServiceUrl=http://identity-svc
       - GrpcAuction=http://auction-svc:7777
     ports:
-      - 7003:80
+      - "7003:80"
     depends_on:
       - mongodb
       - rabbitmq
