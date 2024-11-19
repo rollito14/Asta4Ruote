@@ -1,23 +1,23 @@
-﻿FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
-USER $APP_UID
+﻿FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /app
-EXPOSE 8080
-EXPOSE 8081
-
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-ARG BUILD_CONFIGURATION=Release
-WORKDIR /src
-COPY ["src/BiddingService/BiddingService.csproj", "src/BiddingService/"]
-RUN dotnet restore "src/BiddingService/BiddingService.csproj"
-COPY . .
-WORKDIR "/src/src/BiddingService"
-RUN dotnet build "BiddingService.csproj" -c $BUILD_CONFIGURATION -o /app/build
-
-FROM build AS publish
-ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "BiddingService.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+EXPOSE 80
+# copy all .csproj files and restore as distinct layers.  Use the same COPY
+# for every dockerfile in the project to take advantage of Docker caching
+COPY Asta4Ruote.sln Asta4Ruote.sln
+COPY src/AuctionService/AuctionService.csproj src/AuctionService/AuctionService.csproj
+COPY src/SearchService/SearchService.csproj src/SearchService/SearchService.csproj
+COPY src/GatewayService/GatewayService.csproj src/GatewayService/GatewayService.csproj
+COPY src/BiddingService/BiddingService.csproj src/BiddingService/BiddingService.csproj
+COPY src/IdentityService/IdentityService.csproj src/IdentityService/IdentityService.csproj
+COPY src/Contracts/Contracts.csproj src/Contracts/Contracts.csproj
+RUN dotnet restore Asta4Ruote.sln
+# Copy the app folders over
+COPY src/BiddingService src/BiddingService
+COPY src/Contracts src/Contracts
+WORKDIR /app/src/BiddingService
+RUN dotnet publish -c Release -o /app/src/out
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 WORKDIR /app
-COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "BiddingService.dll"]
+COPY --from=build /app/src/out .
+ENTRYPOINT [ "dotnet", "BiddingService.dll" ]

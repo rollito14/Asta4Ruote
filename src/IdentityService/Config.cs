@@ -43,6 +43,14 @@ public static class Config
                 AllowedScopes = {"openid", "profile", "auctionApp"},
                 AccessTokenLifetime = 3600*24*30,
                 AlwaysIncludeUserClaimsInIdToken = true
+            }, new Client
+            {
+                ClientId = "insomnia",
+                ClientName = "Insomnia",
+                AllowedScopes = {"openid", "profile", "auctionApp"},
+                RedirectUris = {"https://insomnia.rest/oauth2/callback"},
+                ClientSecrets = new[] {new Secret("AnotherSecret".Sha256())},
+                AllowedGrantTypes = {GrantType.ResourceOwnerPassword}
             }
         };
 }
