@@ -17,6 +17,7 @@ RUN dotnet restore Asta4Ruote.sln
 #Copy the app folders
 COPY src/AuctionService src/AuctionService
 COPY src/Contracts src/Contracts
+
 WORKDIR /app/src/AuctionService
 RUN dotnet publish -c Release -o /app/src/out
 

@@ -10,10 +10,12 @@ COPY src/GatewayService/GatewayService.csproj src/GatewayService/GatewayService.
 COPY src/BiddingService/BiddingService.csproj src/BiddingService/BiddingService.csproj
 COPY src/IdentityService/IdentityService.csproj src/IdentityService/IdentityService.csproj
 COPY src/Contracts/Contracts.csproj src/Contracts/Contracts.csproj
+
 RUN dotnet restore Asta4Ruote.sln
 # Copy the app folders over
 COPY src/BiddingService src/BiddingService
 COPY src/Contracts src/Contracts
+
 WORKDIR /app/src/BiddingService
 RUN dotnet publish -c Release -o /app/src/out
 # Build runtime image

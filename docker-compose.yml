@@ -36,8 +36,8 @@
     - IdentityServiceUrl=http://identity-svc
     - Kestrel__Endpoints__Grpc__Protocols=Http2
     - Kestrel__Endpoints__Grpc__Url=http://+:7777
-    - Kestrel__Endpoints__Grpc__WebApi_Protocols=Http1
-    - Kestrel__Endpoints__Grpc__WebApi_Url=http://+:80
+    - Kestrel__Endpoints__Grpc__WebApi__Protocols=Http1
+    - Kestrel__Endpoints__Grpc__WebApi__Url=http://+:80
    ports:
      - 7001:80
      - 7777:7777
@@ -82,9 +82,9 @@
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
     ports:
-      - "6001:80"
+      - 6001:80
   bid-svc:
-    image: cyberniko14/bid-svc:latest
+    image: trycatchlearn/bid-svc:latest
     build:
       context: .
       dockerfile: src/BiddingService/Dockerfile
@@ -100,3 +100,4 @@
     depends_on:
       - mongodb
       - rabbitmq
+  

@@ -4,7 +4,6 @@
         <TargetFramework>net8.0</TargetFramework>
         <Nullable>disable</Nullable>
         <ImplicitUsings>enable</ImplicitUsings>
-        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
     </PropertyGroup>
     
 
@@ -17,7 +16,7 @@
 
     <ItemGroup>
       <PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" Version="12.0.1" />
-      <PackageReference Include="Google.Protobuf" Version="3.28.3" />
+      <PackageReference Include="Google.Protobuf" Version="3.28.0" />
       <PackageReference Include="Grpc.Net.Client" Version="2.66.0" />
       <PackageReference Include="Grpc.Tools" Version="2.67.0">
         <PrivateAssets>all</PrivateAssets>
@@ -30,7 +29,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <Protobuf Include="Protos\auctions.proto" GrpcServices="Client" />
+        <Protobuf Include="protos/auctions.proto" GrpcServices="Client" />
     </ItemGroup>
     
     <ItemGroup>
