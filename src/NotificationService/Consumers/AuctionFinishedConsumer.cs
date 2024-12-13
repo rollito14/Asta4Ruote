@@ -5,9 +5,9 @@ using NotificationService.Hubs;
 
 namespace NotificationService.Consumers;
 
-public class AuctionFinishedConsumer(IHubContext<NotificationHub> hubContext) : IConsumer<AuctionCreated>
+public class AuctionFinishedConsumer(IHubContext<NotificationHub> hubContext) : IConsumer<AuctionFinished>
 {
-    public async Task Consume(ConsumeContext<AuctionCreated> context)
+    public async Task Consume(ConsumeContext<AuctionFinished> context)
     {
         Console.WriteLine("--> auction finished message received");
 

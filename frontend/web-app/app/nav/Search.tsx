@@ -28,11 +28,7 @@ const Search = () => {
         type="text"
         placeholder="search for cars by make, model and year"
         className="
-        flex-grow pl-5 bg-transparent
-         border-none
-         focus:outline-none
-         focus:border-transparent
-         focus:ring-0
+         input-custom
          text-sm text-gray-600"
         value={searchValue}
       />
