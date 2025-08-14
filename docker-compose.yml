@@ -67,9 +67,10 @@
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
+      - IssuerUri=https://id.asta4ruote.local
+      - ClientApp=https://app.asta4ruote.local
       - ConnectionStrings__DefaultConnection=Server=postgres:5432;UserId=postgres;Password=postgrespw;Database=identity
-    ports:
-      - "5001:80"
+      - VIRTUAL_HOST=id.asta4ruote.local
     depends_on:
       - postgres
   gateway-svc:
@@ -80,6 +81,9 @@
     environment:
       - ASPNETCORE_ENVIRONMENT=Docker
       - ASPNETCORE_URLS=http://+:80
+      - ClientApp=https://app.asta4ruote.local
+      - VIRTUAL_HOST=api.asta4ruote.local
+
     ports:
       - "6001:80"
   bid-svc:
@@ -112,4 +116,32 @@
       - "7004:80"
     depends_on:
       - rabbitmq
-  
+  web-app:
+    image: cyberniko14/web-app:latest
+    build:
+      context: .
+      dockerfile: frontend/web-app/Dockerfile
+    volumes:
+      - /var/lib/web/data
+    ports:
+      - "3000:3000"
+    environment:
+      - AUTH_SECRET="8xH5grwPjjH2ymBLGlmeZqXbxM3TAp1QmvepAu45Iz0="
+      - API_URL=http://gateway-svc/
+      - ID_URL=https://id.asta4ruote.local
+      - ID_URL_INTERNAL=http://identity-svc
+      - AUTH_URL=https://app.asta4ruote.local
+      - AUTH_URL_INTERNAL=http://web-app:3000
+      - VIRTUAL_HOST=app.asta4ruote.local
+      - VIRTUAL_PORT=3000
+  nginx-proxy:
+      image: nginxproxy/nginx-proxy
+      container_name: nginx-proxy
+      ports:
+        - "80:80"
+        - "443:443"
+      volumes:
+        - /var/run/docker.sock:/tmp/docker.sock:ro
+        - ./devcert:/etc/nginx/certs
+      
+

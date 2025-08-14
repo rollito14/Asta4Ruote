@@ -14,11 +14,11 @@ import { Bid } from "@/types";
 import BidItem from "@/app/auctions/details/[id]/BidItem";
 import BidList from "@/app/auctions/details/[id]/BidList";
 
-export default async function Details({ params }: { params: { id: string } }) {
+export default async function Details({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
   const data = await getDetailedViewData(id);
   const user = await getCurrentUser();
-  const bids = await getBidsForAuction(params.id);
+  const bids = await getBidsForAuction((await params).id);
 
   return (
     <div>

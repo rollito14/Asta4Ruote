@@ -17,18 +17,17 @@ public static class Config
             new ApiScope("auctionApp", "Auction app full access"),
         };
 
-    public static IEnumerable<Client> Clients =>
-        new Client[]
-        {
+    public static IEnumerable<Client> Clients(IConfiguration config) =>
+    [
 
-            // interactive client using code flow + pkce
+        // interactive client using code flow + pkce
             new Client
             {
                 ClientId = "postman",
                 ClientName = "postman",
                 AllowedScopes = {"openid", "profile", "auctionApp"},
                 RedirectUris = {"https://www.getpostman.com/oauth2/callback"},
-                ClientSecrets = new[] {new Secret("NotASecret".Sha256())},
+                ClientSecrets = [new Secret("NotASecret".Sha256())],
                 AllowedGrantTypes = {GrantType.ResourceOwnerPassword}
             },
             new Client
@@ -38,19 +37,19 @@ public static class Config
                 ClientSecrets = {new Secret("secret".Sha256())},
                 AllowedGrantTypes = GrantTypes.CodeAndClientCredentials,
                 RequirePkce = false,
-                RedirectUris = {"http://localhost:3000/api/auth/callback/id-server"},
+                RedirectUris = {config["ClientApp"] + "/api/auth/callback/id-server"},
                 AllowOfflineAccess = true,
                 AllowedScopes = {"openid", "profile", "auctionApp"},
                 AccessTokenLifetime = 3600*24*30,
                 AlwaysIncludeUserClaimsInIdToken = true
-            }, new Client
-            {
+            }, new()
+        {
                 ClientId = "insomnia",
                 ClientName = "Insomnia",
                 AllowedScopes = {"openid", "profile", "auctionApp"},
                 RedirectUris = {"https://insomnia.rest/oauth2/callback"},
-                ClientSecrets = new[] {new Secret("AnotherSecret".Sha256())},
+                ClientSecrets = [new Secret("AnotherSecret".Sha256())],
                 AllowedGrantTypes = {GrantType.ResourceOwnerPassword}
             }
-        };
+    ];
 }

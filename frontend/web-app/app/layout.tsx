@@ -3,7 +3,7 @@ import Navbar from "@/app/nav/Navbar";
 import React from "react";
 import ToasterProvider from "@/app/providers/ToasterProvider";
 import SignalRProvider from "@/app/providers/SignalR_Provider";
-import { getCurrentUser } from "@/app/actions/authActions";
+import {SessionProvider} from "next-auth/react";
 
 export const metadata = {
   title: "Asta4Route",
@@ -15,15 +15,16 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const user = await getCurrentUser();
   return (
     <html lang="en">
       <body>
+      <SessionProvider>
         <ToasterProvider />
         <Navbar />
         <main className={"container mx-auto px-5 pt-10"}>
-          <SignalRProvider user={user}>{children}</SignalRProvider>
+          <SignalRProvider>{children}</SignalRProvider>
         </main>
+      </SessionProvider>
       </body>
     </html>
   );

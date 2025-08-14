@@ -1,10 +1,11 @@
-﻿import Search from "@/app/nav/Search";
+﻿'use client';
+import Search from "@/app/nav/Search";
 import Logo from "@/app/nav/Logo";
 import LoginButton from "@/app/nav/LoginButton";
-import { getCurrentUser } from "@/app/actions/authActions";
 import UserAction from "@/app/nav/UserAction";
-const Navbar = async () => {
-  const user = await getCurrentUser();
+import {useSession} from "next-auth/react";
+const Navbar = () => {
+    const user = useSession().data?.user;
   return (
     <header
       className={
